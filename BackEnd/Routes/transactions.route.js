@@ -1,5 +1,5 @@
 const express = require('express');
-const { getTransactions, calculateStatistics, calculateBar, calculatePie} = require('../controller/transaction.controller');
+const { getTransactions, calculateStatistics, calculateBar, calculatePie, CombinedData} = require('../controller/transaction.controller');
 
 const route = express.Router();
 
@@ -22,7 +22,7 @@ route.get('/statistics', async (req, res) => {
      try {
        const { month = '01'} = req.query;
    
-       // Calculate statistics using the controller function
+       
        const statistics = await calculateStatistics(month);
    
        res.status(200).json(statistics);
@@ -34,7 +34,7 @@ route.get('/statistics', async (req, res) => {
 
    route.get('/bar-chart', async (req, res) => {
      try {
-       const { month = '01'} = req.query; // Get the month from the query parameter
+       const { month = '01'} = req.query; 
      const data = await calculateBar(month)
 
      res.status(200).json(data);
@@ -48,18 +48,35 @@ route.get('/statistics', async (req, res) => {
 
    route.get('/pie-chart', async (req, res) => {
     try {
-      const { month = '01' } = req.query; // Get the month from the query parameter
+      const { month = '01' } = req.query; 
   
       
      const pieChartData = await calculatePie(month);
      console.log(pieChartData)
-      // Send the pie chart data as a JSON response
+     
       res.status(200).json(pieChartData);
     } catch (err) {
       console.error('Error:', err);
       res.status(500).json({ error: err.message });
     }
   });
+
+
+
+  route.get('/combine-data', async (req, res) => {
+    try {
+   
+
+      const data = await CombinedData();
+      console.log(data)
+    
+      res.status(200).json(data);
+    } catch (err) {
+      console.error('Error:', err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
 
 
 module.exports ={ route};

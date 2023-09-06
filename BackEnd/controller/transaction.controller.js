@@ -1,4 +1,5 @@
 const Product = require( "../db/product.model");
+const axios = require('axios');
 
 async function getTransactions(month, search,page){
     
@@ -32,7 +33,7 @@ async function getTransactions(month, search,page){
       }).skip((page - 1) * PER_PAGE)
       .limit(PER_PAGE);;
 
-       console.log(data)
+      //  console.log(data)
        if(data.length === 0){
         return [{Message: "No Record Found"}];
        }
@@ -98,13 +99,12 @@ async function calculateStatistics(month) {
 
   async function calculateBar(month) {
   try{
-// Define the start and end dates for the selected month
-const startDate = new Date(`01-${month}-2000`);
+
+    const startDate = new Date(`01-${month}-2000`);
 const endDate = new Date(`01-${month}-2000`);
 endDate.setMonth(endDate.getMonth() + 1);
 const regexPattern = new RegExp(`${month}`, 'i'); 
 
-// Define price ranges
 const priceRanges = [
   { min: 0, max: 100 },
   { min: 101, max: 200 },
@@ -184,17 +184,41 @@ return priceRangeResults;
           },
         ]);
     
-        // Convert the result into an object for the pie chart
         const pieChartData = {};
         categoryCounts.forEach((category, index) => {
           pieChartData[category._id] = category.itemCount;
         });
-          // console.log(pieChartData)
+        
         return pieChartData
       }
       catch(err){
         return err
       }
+    }
+
+    async function CombinedData(){
+      const api1URL = 'http://localhost:3001/transactions';
+      const api2URL = 'http://localhost:3001/statistics';
+      const api3URL = 'http://localhost:3001/bar-chart';
+      const api4URL = 'http://localhost:3001/pie-chart';
+    
+      
+      const [response1, response2, response3, response4] = await Promise.all([
+        axios.get(api1URL),
+        axios.get(api2URL),
+        axios.get(api3URL),
+        axios.get(api4URL),
+      ]);
+    
+   
+      const combinedData = {
+        API1: response1.data,
+        API2: response2.data,
+        API3: response3.data,
+        API4: response4.data,
+      };
+    
+      return combinedData;
     }
   
 
@@ -202,5 +226,6 @@ module.exports = {
     getTransactions,
     calculateStatistics,
     calculateBar,
-    calculatePie
+    calculatePie,
+    CombinedData
 }
