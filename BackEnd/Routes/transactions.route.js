@@ -52,7 +52,7 @@ route.get('/statistics', async (req, res) => {
   
       
      const pieChartData = await calculatePie(month);
-     console.log(pieChartData)
+    //  console.log(pieChartData)
      
       res.status(200).json(pieChartData);
     } catch (err) {
@@ -68,7 +68,7 @@ route.get('/statistics', async (req, res) => {
    
 
       const data = await CombinedData();
-      console.log(data)
+      // console.log(data)
     
       res.status(200).json(data);
     } catch (err) {

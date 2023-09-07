@@ -1,11 +1,11 @@
 const express = require('express');
 const connect = require('./db/connectDatabase');
 const { route } = require('./Routes/transactions.route');
-
+const cors = require('cors')
 const app = express();
 
+app.use(cors());
 app.use('/', route)
-
 
 
 
